@@ -28,11 +28,11 @@
   <script src="pony_mover.js"></script>
 
   <script>
-    var mover = new PonyMover($('#pony'), $('#log'))
+    var client = new client();
 
-    $('body').keydown(function(e) { mover.move(e.which) })
+    $('body').keydown(function(e) { client.moveDirection(e.which) })
 
-    $('#undo').click(function() { mover.undo() })
+    $('#undo').click(function() { client.undoLast() })
   </script>
 
 </body>

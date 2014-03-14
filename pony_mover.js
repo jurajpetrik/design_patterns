@@ -2,22 +2,22 @@
 
 
 /* The Invoker function */
-var Switch = function(){
-    var _commands = [];
-    this.$log = $log;
-    this.storeAndExecute = function(command){
-        _commands.push(command);
+function Switch (){
+    this._commands = [];
+    this.$log = $('#log');
+  }
+Switch.prototype.storeAndExecute = function(command){
+        this._commands.push(command);
         command.execute();
         this.$log.append('<li>' + command.name() + '</li>')
     }
 
-    this.undoLast = function()
+Switch.prototype.undoLast = function()
     {
-      var lastCommand = _commands.pop;
-      lastCommand.prototype.undo();
+      var lastCommand = this._commands.pop();
+      lastCommand.undo();
       this.$log.find('li:last').remove()
     }
-}
 
 /*The Commands*/
 
@@ -95,44 +95,56 @@ var commandRight = function(receiver)
 }
 
 /* The Receiver is .... Pony*/
-var Pony = function(){
-    var pony = $('#pony');
-
-    function moveUp()
-    {
-       receiver.animate({'top': '-=30px'});
-    }
-
-    function moveDown()
-    {
-      receiver.animate({'top': '+=30px'});
-    }
-
-    function moveLeft()
-    {
-      receiver.animate({'left': '-=30px'});
-
-    }
-
-    function moveRight()
-    {
-       receiver.animate({'top': '+=30px'});
-    }
+ function Pony (){
+    this.pony = $('#pony');
 }
+    Pony.prototype.moveUp=function()
+    {
+       this.pony.animate({'top': '-=30px'});
+    }
 
-PonyMover.prototype.moveDirection = function(direction) {
-  switch (direction) {
+    Pony.prototype. moveDown=function()
+    {
+      this.pony.animate({'top': '+=30px'});
+    }
+
+    Pony.prototype. moveLeft=function()
+    {
+      this.pony.animate({'left': '-=30px'});
+
+    }
+
+    Pony.prototype. moveRight=function()
+    {
+       this.pony.animate({'left': '+=30px'});
+    }
+
+/*The client*/
+function client()
+{
+  this.sw = new Switch();
+  this.pony = new Pony();
+
+}
+client.prototype.moveDirection = function(direction) {
+  
+  switch (keyCodeToName[direction]) {
     case 'up':
-      this.$pony.animate({'top': '-=30px'})
+      this.sw.storeAndExecute(new commandUp(this.pony));
       break
     case 'down':
-      this.$pony.animate({'top': '+=30px'})
+      this.sw.storeAndExecute(new commandDown(this.pony));
       break
     case 'left':
-      this.$pony.animate({'left': '-=30px'})
+      this.sw.storeAndExecute(new commandLeft(this.pony));
       break
     case 'right':
-      this.$pony.animate({'left': '+=30px'})
+       this.sw.storeAndExecute(new commandRight(this.pony));
       break
   }
 }
+
+  client.prototype.undoLast = function (){
+    this.sw.undoLast();
+  }
+
